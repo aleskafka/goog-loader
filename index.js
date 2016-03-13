@@ -22,16 +22,19 @@ module.exports = function(source, map) {
 	if (changed(cache, this.resourcePath)) {
 
 		var callback = this.async();
-		var that = this;
 
 		loadDeps(function(source, map) {
-			callback(null, loader(that, source), map);
+			callback(null, loader(this, source), map);
 		}.bind(this, source, map));
 
 	} else {
 		this.callback(null, loader(this, source), map);
 	}
 };
+
+module.exports.options = options;
+module.exports.loadDeps = loadDeps;
+module.exports.init = init;
 
 goog = {
 	dependencies_: {
@@ -72,8 +75,8 @@ var cachedDeps = goog.dependencies_;
 var cachedId   = null;
 var pending    = [];
 
-module.exports.options = options;
-module.exports.init = function(opt) {
+
+function init(opt) {
 	for (var key in opt) {
 		options[key] = opt[key];
 	}
