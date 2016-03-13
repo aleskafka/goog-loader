@@ -3,6 +3,7 @@ var gulp = require('gulp');
 var through = require('through');
 
 var path = require('path');
+var resolve = require('resolve');
 
 var clone = require('./lib/clone');
 var loader = require('./lib/loader');
@@ -11,6 +12,9 @@ var depsline = require('./lib/depsline');
 
 var options = {};
 var cache = {};
+
+options._closureLibrary = resolve.sync('google-closure-library', { basedir: __dirname });
+options._closureLibrary = path.resolve(options._closureLibrary, '../../../..');
 
 module.exports = function(source, map) {
 	this.cacheable(true);
@@ -40,6 +44,10 @@ goog = {
 	},
 	addDependency: function(relPath, provides, requires, opt_isModule) {
 		if (relPath[0]!=='/') {
+			if (!options.closureLibrary) {
+				throw new Error('Missing Closure Library for ' + relPath + ' dependency.');
+			}
+
 			relPath = options.closureLibrary + '/closure/goog/' + relPath;
 		}
 
@@ -70,7 +78,14 @@ module.exports.init = function(opt) {
 		options[key] = opt[key];
 	}
 
-	require(options.closureLibrary + '/closure/goog/deps.js');
+	if (options.closureLibrary===true) {
+		options.closureLibrary = options._closureLibrary;
+	}
+
+	if (options.closureLibrary) {
+		require(options.closureLibrary + '/closure/goog/deps.js');
+	}
+
 	cachedDeps = goog.dependencies_;
 }
 

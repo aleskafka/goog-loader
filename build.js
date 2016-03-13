@@ -6,7 +6,7 @@ var extract = require('./lib/extract');
 var clone = require('./lib/clone');
 
 var gulp = require('gulp');
-var closureCompiler = require('gulp-closure-compiler');
+var closureCompiler = require('google-closure-compiler').gulp();
 var through = require('through');
 
 module.exports = function(source, map) {
@@ -20,18 +20,21 @@ module.exports.pitch = function(source, map) {
 
 	if (deps && deps.provides.length) {
 		var callback = this.async();
-		var opt = clone(options.compiler);
-		var flags = opt.compilerFlags = opt.compilerFlags || {};
-
-		opt.fileName = path.basename(this.resourcePath);
+		var flags = clone(options.compiler);
 
 		flags.closure_entry_point = deps.provides[0];
 		flags.generate_exports = true;
 		flags.only_closure_dependencies = true;
 		flags.output_wrapper = "module.exports = (function(){%output% return "+options.globalObj+"['imports']}).apply("+options.globalObj+");"
 
-		gulp.src([options.closureLibrary + '/**/*.js'].concat(options.js.length ? options.js : [options.js])).
-			pipe(closureCompiler(opt)).
+		var js = options.js.length ? options.js : [options.js];
+
+		if (options.closureLibrary) {
+			js = js.concat([options.closureLibrary + '/**/*.js']);
+		}
+
+		gulp.src(js).
+			pipe(closureCompiler(flags)).
 			pipe(through(function(file) {
 				callback(null, file.contents.toString(), map);
 			}));

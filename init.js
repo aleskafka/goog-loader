@@ -8,7 +8,7 @@ var baseFile = null;
 module.exports = function(source, map) {
 
 	if (baseFile === null) {
-		baseFile = fs.readFileSync(path.join(options.closureLibrary, 'closure/goog/base.js'), 'utf-8');
+		baseFile = fs.readFileSync(path.join(options.closureLibrary||options._closureLibrary, 'closure/goog/base.js'), 'utf-8');
 		baseFile = baseFile.replace(/var goog = goog \|\| \{\};/, '');
 	}
 
