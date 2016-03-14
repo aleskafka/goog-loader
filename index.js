@@ -100,6 +100,7 @@ function init(opt) {
 
 	cachedDeps = goog.dependencies_;
 
+
 	return function(development) {
 		return (development ? 'goog-loader/init!' : 'goog-loader/build!') + opt.input;
 	}
