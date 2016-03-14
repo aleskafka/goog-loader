@@ -4,14 +4,25 @@ var through = require('through');
 
 var path = require('path');
 var resolve = require('resolve');
+var extend = require('deep-extend');
 
 var clone = require('./lib/clone');
 var loader = require('./lib/loader');
 var changed = require('./lib/changed');
 var depsline = require('./lib/depsline');
 
-var options = {};
 var cache = {};
+var options = {
+	compiler: {
+	  compilation_level: 'ADVANCED',
+	  define: [
+	    'goog.DEBUG=false',
+	    'goog.dom.ASSUME_STANDARDS_MODE=true',
+	  ],
+	  only_closure_dependencies: true,
+	  warning_level: 'QUIET'
+	}
+};
 
 options._closureLibrary = resolve.sync('google-closure-library', { basedir: __dirname });
 options._closureLibrary = path.resolve(options._closureLibrary, '../../../..');
@@ -77,9 +88,7 @@ var pending    = [];
 
 
 function init(opt) {
-	for (var key in opt) {
-		options[key] = opt[key];
-	}
+	extend(options, opt);
 
 	if (options.closureLibrary===true) {
 		options.closureLibrary = options._closureLibrary;
@@ -90,6 +99,13 @@ function init(opt) {
 	}
 
 	cachedDeps = goog.dependencies_;
+
+	if (opt.development) {
+		return 'goog-loader/init!' + opt.input;
+
+	} else {
+		return 'goog-loader/build!' + opt.input;
+	}
 }
 
 function loadDeps(done)
