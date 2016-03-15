@@ -31,16 +31,26 @@ options._basePath = path.join(options._closureLibrary, 'closure/goog/base.js')
 module.exports = function(source, map) {
 	this.cacheable(true);
 
-	if (changed(cache, this.resourcePath)) {
+	if (this.resourcePath.indexOf('/closure/goog/base.js')!==-1) {
+		source = "global.goog = {};"
+			 + "global.CLOSURE_NO_DEPS=true;"
+			 + "(function() { "
+			 + source.replace(/var goog = goog \|\| \{\};/, '')
+			 + " }).call(global)";
 
+		this.callback(null, source, map);
+
+	} else if (changed(cache, this.resourcePath)) {
 		var callback = this.async();
 
 		loadDeps(function(source, map) {
-			callback(null, loader(this, source), map);
+			source = "require('goog!"+options._basePath+"'); " + loader(this, source);
+			callback(null, source, map);
 		}.bind(this, source, map));
 
 	} else {
-		this.callback(null, loader(this, source), map);
+		source = "require('goog!"+options._basePath+"'); " + loader(this, source);
+		this.callback(null, source, map);
 	}
 };
 
@@ -104,7 +114,7 @@ function init(opt) {
 
 
 	return function(development) {
-		return (development ? 'goog-loader/init!' : 'goog-loader/build!') + opt.input;
+		return (development ? 'goog!' : 'goog-loader/build!') + opt.input;
 	}
 }
 
