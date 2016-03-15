@@ -26,6 +26,7 @@ var options = {
 
 options._closureLibrary = resolve.sync('google-closure-library', { basedir: __dirname });
 options._closureLibrary = path.resolve(options._closureLibrary, '../../../..');
+options._basePath = path.join(options._closureLibrary, 'closure/goog/base.js')
 
 module.exports = function(source, map) {
 	this.cacheable(true);
@@ -95,6 +96,7 @@ function init(opt) {
 	}
 
 	if (options.closureLibrary) {
+		options._basePath = path.join(options.closureLibrary, 'closure/goog/base.js')
 		require(options.closureLibrary + '/closure/goog/deps.js');
 	}
 
