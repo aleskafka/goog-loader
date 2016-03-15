@@ -7,7 +7,7 @@ var clone = require('./lib/clone');
 
 var gulp = require('gulp');
 var closureCompiler = require('google-closure-compiler').gulp();
-var through = require('through');
+var through2 = require('through2');
 
 module.exports = function(source, map) {
 	this.callback(null, source, map);
@@ -35,7 +35,7 @@ module.exports.pitch = function(source, map) {
 
 		gulp.src(js).
 			pipe(closureCompiler(flags)).
-			pipe(through(function(file) {
+			pipe(through2.obj(function(file) {
 				callback(null, file.contents.toString(), map);
 			}));
 
