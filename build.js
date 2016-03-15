@@ -4,9 +4,11 @@ var path = require('path');
 var options = require('./index').options;
 var extract = require('./lib/extract');
 var clone = require('./lib/clone');
+var format = require('./lib/format');
 
 var gulp = require('gulp');
 var closureCompiler = require('google-closure-compiler').gulp();
+var compileExports = require('./lib/exports');
 var through2 = require('through2');
 
 module.exports = function(source, map) {
@@ -25,15 +27,16 @@ module.exports.pitch = function(source, map) {
 		flags.closure_entry_point = deps.provides[0];
 		flags.generate_exports = true;
 		flags.only_closure_dependencies = true;
-		flags.output_wrapper = "module.exports = (function(){%output% return "+options.globalObj+"['imports']}).apply("+options.globalObj+");"
+		flags.output_wrapper = "module.exports = (function(){%output% return _closure."+format.namespace(deps.provides[0])+";}).apply("+options.globalObj+");"
 
-		var js = options.js.length ? options.js : [options.js];
+		var js = Array.isArray(options.js) ? options.js : [options.js];
 
 		if (options.closureLibrary) {
 			js = js.concat([options.closureLibrary + '/**/*.js']);
 		}
 
 		gulp.src(js).
+			pipe(compileExports(options.js)).
 			pipe(closureCompiler(flags)).
 			pipe(through2.obj(function(file) {
 				callback(null, file.contents.toString(), map);
