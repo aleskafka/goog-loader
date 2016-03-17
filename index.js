@@ -32,7 +32,8 @@ module.exports = function(source, map) {
 			return callback(null, source, map);
 		}
 
-		that.emitWarning('File ' + resourcePath + ' is not reachable from goog-loader entry point.');
+		that.emitError('File ' + resourcePath + ' is not reachable from goog-loader entry point.');
+		return callback(null, " ");
 	});
 }
 
