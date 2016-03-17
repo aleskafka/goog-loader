@@ -1,33 +1,32 @@
 
 var fs = require('fs');
-var path = require('path');
-var options = require('./index').options;
-var extract = require('./lib/extract');
-var clone = require('./lib/clone');
-var format = require('./lib/format');
 
 var gulp = require('gulp');
-var closureCompiler = require('google-closure-compiler').gulp();
-var compileExports = require('./lib/exports');
 var through2 = require('through2');
+var closureCompiler = require('google-closure-compiler').gulp();
 
-module.exports = function(source, map) {
-	this.callback(null, source, map);
-}
+var compileExports = require('./lib/exports');
+var options = require('./lib/options');
+var extract = require('./lib/extract');
+var clone = require('./lib/clone');
 
-module.exports.pitch = function(source, map) {
+
+module.exports = function() {}
+
+
+module.exports.pitch = function() {
 	this.cacheable(true);
 
 	var deps = extract(fs.readFileSync(this.resourcePath, 'utf-8'));
 
-	if (deps && deps.provides.length) {
+	if (deps && deps.modules.length) {
 		var callback = this.async();
 		var flags = clone(options.compiler);
 
-		flags.closure_entry_point = deps.provides[0];
+		flags.closure_entry_point = deps.modules[0];
 		flags.generate_exports = true;
 		flags.only_closure_dependencies = true;
-		flags.output_wrapper = "module.exports = (function(){%output% return _closure."+format.namespace(deps.provides[0])+";}).apply("+options.globalObj+");"
+		flags.output_wrapper = "global.googNamespace = {}; \n (function() { %output% })(global); "; //  \n module.exports = _closure;
 
 		var js = Array.isArray(options.js) ? options.js : [options.js];
 
@@ -39,11 +38,11 @@ module.exports.pitch = function(source, map) {
 			pipe(compileExports(options.js)).
 			pipe(closureCompiler(flags)).
 			pipe(through2.obj(function(file) {
-				callback(null, file.contents.toString(), map);
+				callback(null, file.contents.toString());
 			}));
 
 	} else {
-		this.emitWarning("File '"+this.resourcePath+"' does not provide namespace.");
-		this.callback(null, ' ', map);
+		this.emitWarning("Entry '"+this.resourcePath+"' does not export module.");
+		this.callback(null, ' ');
 	}
 }
