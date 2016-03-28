@@ -28,14 +28,14 @@ module.exports.pitch = function() {
 		flags.only_closure_dependencies = true;
 		flags.output_wrapper = "global.googNamespace = {}; \n (function() { %output% })(global); "; //  \n module.exports = _closure;
 
-		var js = Array.isArray(options.js) ? options.js : [options.js];
+		var globs = options.globs;
 
 		if (options.closureLibrary) {
-			js = js.concat([options.closureLibrary + '/**/*.js']);
+			globs = globs.concat([options.closureLibrary + '/**/*.js']);
 		}
 
-		gulp.src(js).
-			pipe(compileExports(options.js)).
+		gulp.src(globs)).
+			pipe(compileExports(options.globs)).
 			pipe(closureCompiler(flags)).
 			pipe(through2.obj(function(file) {
 				callback(null, file.contents.toString());
