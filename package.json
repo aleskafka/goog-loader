@@ -1,11 +1,11 @@
 {
   "name": "goog-loader",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "no",
   "main": "index.js",
   "dependencies": {
     "gulp": "^3.9",
-    "google-closure-compiler": "google-closure-compiler@20160315.2.0",
+    "google-closure-compiler": "20160315.2.0",
     "google-closure-library": "*",
     "through2": "^2.0.0",
     "resolve": "^1.1.7",
