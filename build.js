@@ -34,7 +34,7 @@ module.exports.pitch = function() {
 			globs = globs.concat([options.closureLibrary + '/**/*.js']);
 		}
 
-		gulp.src(globs)).
+		gulp.src(globs).
 			pipe(compileExports(options.globs)).
 			pipe(closureCompiler(flags)).
 			pipe(through2.obj(function(file) {
