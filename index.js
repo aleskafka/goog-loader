@@ -28,7 +28,7 @@ module.exports = function(source, map) {
 
 	dependencies.changed(resourcePath, cache[resourcePath]&&cache[resourcePath].error, function() {
 		if (dependencies.isReachable(resourcePath)) {
-			var request = "!!goog/"
+			var request = "!!goog-loader/"
 				+ (production ? "build" : "base")
 				+ "!"
 				+ (production ? options.entry : options._basePath);
