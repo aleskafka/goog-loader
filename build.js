@@ -26,7 +26,7 @@ module.exports.pitch = function() {
 		flags.closure_entry_point = deps.modules[0];
 		flags.generate_exports = true;
 		flags.only_closure_dependencies = true;
-		flags.output_wrapper = "global.googNamespace = {}; \n (function() { %output% })(global); "; //  \n module.exports = _closure;
+		flags.output_wrapper = "global.googNamespace = {}; \n (function() { %output% }).call(global); ";
 
 		var globs = options.globs;
 
