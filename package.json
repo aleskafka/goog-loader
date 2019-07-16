@@ -5,11 +5,11 @@
   "main": "index.js",
   "dependencies": {
     "gulp": "^4.0",
-    "google-closure-compiler": "20160315.2.0",
+    "google-closure-compiler": "20161024.2.0",
     "google-closure-library": "20190121.0.0",
     "through2": "^2.0.0",
     "resolve": "^1.1.7",
-    "deep-extend": "^0.4.1",
+    "deep-extend": "^0.6.0",
     "acorn": "^3.0.0",
     "minimatch": "^3.0.0"
   },

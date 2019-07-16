@@ -10,10 +10,11 @@ var options = require('./lib/options');
 var extract = require('./lib/extract');
 var clone = require('./lib/clone');
 
+require('google-closure-compiler/lib/node/closure-compiler').JAR_PATH = __dirname + '/compiler.jar'
+require('google-closure-compiler/lib/node/closure-compiler').COMPILER_PATH = __dirname + '/compiler.jar'
+
 
 module.exports = function() {}
-
-
 module.exports.pitch = function() {
 	this.cacheable(true);
 
