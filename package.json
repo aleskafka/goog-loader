@@ -1,6 +1,6 @@
 {
   "name": "goog-loader",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "no",
   "main": "index.js",
   "repository": {
@@ -21,7 +21,7 @@
     "through2": "^2.0.0",
     "resolve": "^1.1.7",
     "deep-extend": "^0.6.0",
-    "acorn": "^3.0.0",
+    "acorn": "^7.1.1",
     "minimatch": "^3.0.0"
   },
   "author": "Ales Kafka",
