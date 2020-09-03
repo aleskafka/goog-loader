@@ -17,7 +17,7 @@
   "dependencies": {
     "gulp": "^4.0",
     "google-closure-compiler": "20161024.2.0",
-    "google-closure-library": "20190121.0.0",
+    "google-closure-library": "20200830.0.0",
     "through2": "^2.0.0",
     "resolve": "^1.1.7",
     "deep-extend": "^0.6.0",
